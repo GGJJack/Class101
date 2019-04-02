@@ -1,11 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const controller = require('../controller/index.controller')
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
-	res.status(200).json({
-		hello: "World"
-	})
-});
+const router = express.Router();
+
+router.get('/', controller.status);
+router.get('/status', controller.status);
 
 module.exports = router;
