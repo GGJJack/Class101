@@ -123,14 +123,47 @@ const removeComment = (req, res) => {
 	})
 }
 
+const getPostList = (req, res) => {
+	let offset = parseInt(req.query.offset, 10) || 0
+	let limit = parseInt(req.query.limit, 10) || 20
+
+	db.getPostList(offset, limit).then((posts) => {
+		if (!posts) return res.status(404).json({ reason: "NOT_FOUND" })
+		res.status(200).json(posts)
+	}, (err) => {
+		console.log(err)
+		res.status(500).json({ reason: "QUERY_FAILED" })
+	})
+}
+
+const getCommentList = (req, res) => {
+	let postId = req.params.postId
+
+	if (!postId) return res.status(400).json({ reason: "MISSING_PARAMS" })
+
+	let offset = parseInt(req.query.offset, 10) || 0
+	let limit = parseInt(req.query.limit, 10) || 20
+
+	db.getCommentList(postId, offset, limit).then((comments) => {
+		if (!comments) return res.status(404).json({ reason: "NOT_FOUND" })
+		res.status(200).json(comments)
+	}, (err) => {
+		console.log(err)
+		res.status(500).json({ reason: "QUERY_FAILED" })
+	})
+}
+
 module.exports = {
 	createPost: createPost
 	, viewPost: viewPost
 	, updatePost: updatePost
 	, removePost: removePost
-
+	
 	, createComment: createComment
 	, viewComment: viewComment
 	, updateComment: updateComment
 	, removeComment: removeComment
+	
+	, getPostList: getPostList
+	, getCommentList: getCommentList
 }
