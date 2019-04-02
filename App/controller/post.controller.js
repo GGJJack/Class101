@@ -3,11 +3,11 @@ const db = require('../db/db')
 const createPost = (req, res) => {
 	let title = req.body.title
 	let content = req.body.content
-	let writer = req.body.writer
+	let userId = req.body.userId
 
-	if (!title || !content || !writer) return res.status(400).json({ reason: "MISSING_PARAMS" })
+	if (!title || !content || !userId) return res.status(400).json({ reason: "MISSING_PARAMS" })
 
-	db.createPost(title, content, writer).then((post) => {
+	db.createPost(title, content, userId).then((post) => {
 		console.log(post)
 		res.status(201).json({ success: true, id: post._id })
 	}, (err) => {
@@ -64,9 +64,73 @@ const removePost = (req, res) => {
 	})
 }
 
+const createComment = (req, res) => {
+	let postId = req.params.postId
+	let userId = req.body.userId
+	let content = req.body.content
+
+	if (!postId || !content || !userId) return res.status(400).json({ reason: "MISSING_PARAMS" })
+
+	db.createComment(userId, postId, content).then((comment) => {
+		console.log(comment)
+		res.status(201).json({ success: true, id: comment._id })
+	}, (err) => {
+		console.log(err)
+		res.status(500).json({ reason: "QUERY_FAILED" })
+	})
+}
+
+const viewComment = (req, res) => {
+	let commentId = req.params.commentId
+
+	if (!commentId) return res.status(400).json({ reason: "MISSING_PARAMS" })
+
+	db.viewComment(commentId).then((comment) => {
+		if (!comment) return res.status(404).json({ reason: "NOT_FOUND" })
+		res.status(200).json(comment)
+	}, (err) => {
+		console.log(err)
+		res.status(500).json({ reason: "QUERY_FAILED" })
+	})
+}
+
+const updateComment = (req, res) => {
+	let commentId = req.params.commentId
+	let content = req.body.content
+
+	if (!commentId || !content) return res.status(400).json({ reason: "MISSING_PARAMS" })
+
+	db.updateComment(commentId, content).then((comment) => {
+		if (!comment) return res.status(404).json({ reason: "NOT_FOUND" })
+		res.status(201).json(comment)
+	}, (err) => {
+		console.log(err)
+		res.status(500).json({ reason: "QUERY_FAILED" })
+	})
+}
+
+const removeComment = (req, res) => {
+	let commentId = req.params.commentId
+
+	if (!commentId) return res.status(400).json({ reason: "MISSING_PARAMS" })
+
+	db.removeComment(commentId).then((comment) => {
+		if (!comment) return res.status(404).json({ reason: "NOT_FOUND" })
+		res.status(201).json(comment)
+	}, (err) => {
+		console.log(err)
+		res.status(500).json({ reason: "QUERY_FAILED" })
+	})
+}
+
 module.exports = {
 	createPost: createPost
 	, viewPost: viewPost
 	, updatePost: updatePost
 	, removePost: removePost
+
+	, createComment: createComment
+	, viewComment: viewComment
+	, updateComment: updateComment
+	, removeComment: removeComment
 }
