@@ -4,7 +4,6 @@ const regist = (req, res) => {
 	let name = req.body.name
 	if (!name) return res.status(400).json({ reason: "MISSING_PARAMS" })
 	db.createUser(name).then((user) => {
-		console.log(user)
 		res.status(201).json({ success: true, id: user._id })
 	}, (err) => {
 		console.log(err)
@@ -16,7 +15,7 @@ const getUserInfo = (req, res) => {
 	let userId = req.params.userId
 	if (!userId) return res.status(400).json({ reason: "MISSING_PARAMS" })
 	db.findUser(userId).then((user) => {
-		console.log(user)
+		if (!user) return res.status(404).json({ reason: "NOT_FOUND" })
 		res.status(200).json(user)
 	}, (err) => {
 		console.log(err)

@@ -7,8 +7,8 @@ require('./db/db')
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
-const postRouter = require('./routes/user');
-const commentRouter = require('./routes/user');
+const postRouter = require('./routes/post');
+const commentRouter = require('./routes/comment');
 
 const app = express();
 

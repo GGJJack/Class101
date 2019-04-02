@@ -3,8 +3,9 @@ const controller = require('../controller/post.controller')
 
 var router = express.Router();
 
-router.get('/', function (req, res, next) {
-	res.send('respond with a resource');
-});
+router.post('/create', controller.createPost);
+router.get('/:postId([0-9a-f]{24})', controller.viewPost);
+router.put('/:postId([0-9a-f]{24})', controller.updatePost);
+router.delete('/:postId([0-9a-f]{24})', controller.removePost);
 
 module.exports = router;
