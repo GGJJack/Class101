@@ -2,12 +2,15 @@ const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const expressGraphQL = require('express-graphql')
 require('dotenv').config()
 require('./db/db')
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+
+const graphQLSchema = require('./graphql/schema')
 
 const app = express();
 
@@ -19,6 +22,12 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
+
+app.use('/graphql', expressGraphQL({
+	schema: graphQLSchema.schema
+	, rootValue: graphQLSchema.rootValue
+	, graphiql: true
+}))
 
 app.use(function (req, res, next) {
 	next(createError(404));
